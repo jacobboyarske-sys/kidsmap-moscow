@@ -1,0 +1,21 @@
+# Виртуальное окружение
+.venv/
+
+# Байткод Python
+__pycache__/
+*.pyc
+
+# Кэш и служебные файлы инструментов
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Переменные окружения / секреты
+.env
+
+# VS Code
+.vscode/
+
+# ОС
+.DS_Store
+Thumbs.db

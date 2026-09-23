@@ -24,7 +24,7 @@
 ## Стек
 
 - Python 3.11+, venv
-- Streamlit + streamlit-folium — интерфейс и карта
+- Streamlit + Plotly — интерфейс и карта
 - pandas, pydantic — данные и валидация
 - scikit-learn — классификация категорий (TF-IDF + LogisticRegression)
 - requests + BeautifulSoup4 — скрапинг афиш (этап 5)

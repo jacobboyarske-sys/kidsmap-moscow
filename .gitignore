@@ -13,9 +13,6 @@ __pycache__/
 # Переменные окружения / секреты
 .env
 
-# Регенерируемые артефакты (модели, эмбеддинги)
-data/event_embeddings.npy
-
 # VS Code
 .vscode/
 

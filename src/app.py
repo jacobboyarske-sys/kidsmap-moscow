@@ -106,7 +106,7 @@ with col2:
             color = CATEGORY_COLORS[e.category]
             folium.CircleMarker(
                 location=[e.lat, e.lon],
-                radius=6,
+                radius=12,
                 color="white",
                 weight=2,
                 fill=True,

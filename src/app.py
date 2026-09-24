@@ -117,6 +117,10 @@ with col2:
             ).add_to(m)
             location_lookup[(round(e.lat, 6), round(e.lon, 6), e.title)] = i
 
+        lats = [e.lat for e in filtered_events]
+        lons = [e.lon for e in filtered_events]
+        m.fit_bounds([[min(lats), min(lons)], [max(lats), max(lons)]])
+
         map_data = st_folium(m, height=1000, use_container_width=True, key="map")
 
         clicked = map_data.get("last_object_clicked")

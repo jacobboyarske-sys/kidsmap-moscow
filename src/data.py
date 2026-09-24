@@ -46,6 +46,7 @@ def filter_events(
     date_to: date,
     categories: list[Category],
     age_limits: list[AgeLimit],
+    sources: list[str],
 ) -> list[Event]:
     return [
         e
@@ -53,4 +54,5 @@ def filter_events(
         if date_from <= e.start_date <= date_to
         and e.category in categories
         and e.age_limit in age_limits
+        and e.source in sources
     ]

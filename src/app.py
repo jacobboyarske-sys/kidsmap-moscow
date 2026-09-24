@@ -61,6 +61,13 @@ selected_age_limits = st.sidebar.multiselect(
     format_func=lambda a: a.value,
 )
 
+all_sources = sorted({e.source for e in events})
+selected_sources = st.sidebar.multiselect(
+    "Источник",
+    options=all_sources,
+    default=all_sources,
+)
+
 st.sidebar.divider()
 
 search_query = st.sidebar.text_input(
@@ -80,7 +87,7 @@ with st.sidebar.expander("Цвет на карте"):
     st.markdown(legend_html, unsafe_allow_html=True)
 
 filtered_events = filter_events(
-    events, date_from, date_to, selected_categories, selected_age_limits
+    events, date_from, date_to, selected_categories, selected_age_limits, selected_sources
 )
 
 if search_query.strip():
@@ -156,7 +163,9 @@ with col1:
                 "category": st.column_config.TextColumn("Категория"),
                 "age_limit": st.column_config.TextColumn("Возраст"),
                 "price": st.column_config.TextColumn("Цена"),
-                "url": st.column_config.LinkColumn("Ссылка", display_text="Открыть"),
+                "url": st.column_config.LinkColumn(
+                    "Ссылка", display_text=r"https://(?:www\.)?([^/]+)"
+                ),
             },
         )
     else:

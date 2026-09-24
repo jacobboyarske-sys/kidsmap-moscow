@@ -35,7 +35,7 @@ def get_search_resources():
         return None, None, None
 
 st.set_page_config(page_title="KidsMap Moscow", page_icon="🗺️", layout="wide")
-st.title(":green[KidsMap Moscow]")
+st.title(":green[KidsMap Moscow]", icon=":material/map:")
 
 events = load_events()
 
@@ -49,13 +49,13 @@ else:
     date_from, date_to = default_range
 
 selected_categories = st.sidebar.multiselect(
-    "Категории",
+    ":material/category: Категории",
     options=list(Category),
     default=list(Category),
     format_func=lambda c: c.value,
 )
 selected_age_limits = st.sidebar.multiselect(
-    "Возраст",
+    ":material/child_care: Возраст",
     options=list(AgeLimit),
     default=list(AgeLimit),
     format_func=lambda a: a.value,
@@ -63,7 +63,7 @@ selected_age_limits = st.sidebar.multiselect(
 
 all_sources = sorted({e.source for e in events})
 selected_sources = st.sidebar.multiselect(
-    "Источник",
+    ":material/travel_explore: Источник",
     options=all_sources,
     default=all_sources,
 )
@@ -71,12 +71,14 @@ selected_sources = st.sidebar.multiselect(
 st.sidebar.divider()
 
 search_query = st.sidebar.text_input(
-    "Поиск по смыслу", placeholder="например: что-то спокойное для трёхлетки"
+    "Поиск по смыслу",
+    placeholder="например: что-то спокойное для трёхлетки",
+    icon=":material/search:",
 )
 
 st.sidebar.divider()
 
-with st.sidebar.expander("Цвет на карте"):
+with st.sidebar.expander("Цвет на карте", icon=":material/palette:"):
     legend_html = "".join(
         f'<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">'
         f'<span style="width:12px;height:12px;border-radius:2px;'

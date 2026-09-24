@@ -105,12 +105,16 @@ if search_query.strip():
 
 col1, col2 = st.columns(2)
 
-selected_index = None
+if "map_click_count" not in st.session_state:
+    st.session_state.map_click_count = 0
+if "selected_popup" not in st.session_state:
+    st.session_state.selected_popup = None
+
+popup_lookup: dict[str, int] = {}
 
 with col2:
     if filtered_events:
         m = folium.Map(location=[55.75, 37.62], zoom_start=9)
-        location_lookup: dict[tuple[float, float, str], int] = {}
         for i, e in enumerate(filtered_events):
             color = CATEGORY_COLORS[e.category]
             folium.CircleMarker(
@@ -124,7 +128,7 @@ with col2:
                 tooltip=e.title,
                 popup=f"{e.title}<br>{e.address}",
             ).add_to(m)
-            location_lookup[(round(e.lat, 6), round(e.lon, 6), e.title)] = i
+            popup_lookup[f"{e.title}\n{e.address}"] = i
 
         lats = [e.lat for e in filtered_events]
         lons = [e.lon for e in filtered_events]
@@ -132,31 +136,34 @@ with col2:
 
         map_data = st_folium(m, height=1000, use_container_width=True, key="map")
 
-        clicked = map_data.get("last_object_clicked")
-        clicked_tooltip = map_data.get("last_object_clicked_tooltip")
-        if clicked and clicked_tooltip:
-            key = (round(clicked["lat"], 6), round(clicked["lng"], 6), clicked_tooltip)
-            selected_index = location_lookup.get(key)
+        click_count = map_data.get("last_object_clicked_count") or 0
+        if click_count > st.session_state.map_click_count:
+            st.session_state.map_click_count = click_count
+            st.session_state.selected_popup = map_data.get("last_object_clicked_popup")
+
+        if st.session_state.selected_popup:
+            if st.button(":material/close: Сбросить выбор на карте"):
+                st.session_state.selected_popup = None
+                st.rerun()
     else:
         st.write("Нет событий в выбранном диапазоне")
 
 with col1:
-    st.write(f"Событий в выбранном диапазоне: {len(filtered_events)}")
+    display_events = filtered_events
+    selected_index = popup_lookup.get(st.session_state.selected_popup or "")
+    if selected_index is not None:
+        display_events = [filtered_events[selected_index]]
+        st.write(f"Выбрано на карте из {len(filtered_events)} событий")
+    else:
+        st.write(f"Событий в выбранном диапазоне: {len(filtered_events)}")
 
     table_columns = ["start_date", "title", "category", "age_limit", "price", "url"]
-    if filtered_events:
-        df = pd.DataFrame([e.model_dump() for e in filtered_events])[table_columns]
+    if display_events:
+        df = pd.DataFrame([e.model_dump() for e in display_events])[table_columns]
         df = df.fillna("нет информации")
-        if selected_index is not None and selected_index in df.index:
-            df = pd.concat([df.loc[[selected_index]], df.drop(selected_index)])
-
-        def highlight_selected(row: pd.Series) -> list[str]:
-            if selected_index is not None and row.name == selected_index:
-                return ["background-color: #ffe08a"] * len(row)
-            return [""] * len(row)
 
         st.dataframe(
-            df.style.apply(highlight_selected, axis=1),
+            df,
             hide_index=True,
             height=800,
             column_config={

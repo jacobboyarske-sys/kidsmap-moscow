@@ -104,9 +104,9 @@ with col2:
         location_lookup: dict[tuple[float, float, str], int] = {}
         for i, e in enumerate(filtered_events):
             color = CATEGORY_COLORS[e.category]
-            folium.CircleMarker(
+            folium.Circle(
                 location=[e.lat, e.lon],
-                radius=6,
+                radius=150,
                 color="white",
                 weight=2,
                 fill=True,

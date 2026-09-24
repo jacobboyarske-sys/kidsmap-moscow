@@ -100,7 +100,8 @@ selected_index = None
 
 with col2:
     if filtered_events:
-        m = folium.Map(location=[55.75, 37.62], zoom_start=9)
+        m = folium.Map(location=[55.75, 37.62], zoom_start=9, tiles=None)
+        folium.TileLayer(tiles="OpenStreetMap", opacity=0.5).add_to(m)
         location_lookup: dict[tuple[float, float, str], int] = {}
         for i, e in enumerate(filtered_events):
             color = CATEGORY_COLORS[e.category]

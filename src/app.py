@@ -134,9 +134,10 @@ with col2:
 with col1:
     st.write(f"Событий в выбранном диапазоне: {len(filtered_events)}")
 
-    table_columns = ["title", "start_date", "category", "age_limit", "price"]
+    table_columns = ["start_date", "title", "category", "age_limit", "price", "url"]
     if filtered_events:
         df = pd.DataFrame([e.model_dump() for e in filtered_events])[table_columns]
+        df = df.fillna("нет информации")
         if selected_index is not None and selected_index in df.index:
             df = pd.concat([df.loc[[selected_index]], df.drop(selected_index)])
 
@@ -145,6 +146,18 @@ with col1:
                 return ["background-color: #ffe08a"] * len(row)
             return [""] * len(row)
 
-        st.dataframe(df.style.apply(highlight_selected, axis=1), hide_index=True)
+        st.dataframe(
+            df.style.apply(highlight_selected, axis=1),
+            hide_index=True,
+            height=800,
+            column_config={
+                "title": st.column_config.TextColumn("Название"),
+                "start_date": st.column_config.DateColumn("Дата начала", format="DD.MM.YYYY"),
+                "category": st.column_config.TextColumn("Категория"),
+                "age_limit": st.column_config.TextColumn("Возраст"),
+                "price": st.column_config.TextColumn("Цена"),
+                "url": st.column_config.LinkColumn("Ссылка", display_text="Открыть"),
+            },
+        )
     else:
         st.write("Нет событий в выбранном диапазоне")

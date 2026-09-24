@@ -4,13 +4,25 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+import folium
 import pandas as pd
-import pydeck as pdk
 import streamlit as st
+from streamlit_folium import st_folium
 
 from src.data import filter_events, load_events
 from src.models import AgeLimit, Category
 from src.search import load_embeddings, load_model, search_events
+
+CATEGORY_COLORS: dict[Category, str] = {
+    Category.THEATRE: "#9c27b0",
+    Category.WORKSHOP: "#ff9800",
+    Category.QUEST: "#3f51b5",
+    Category.SPORT: "#4caf50",
+    Category.CINEMA: "#f44336",
+    Category.EXCURSION: "#00bcd4",
+    Category.HOLIDAY: "#e91e63",
+    Category.CONCERT: "#795548",
+}
 
 
 @st.cache_resource
@@ -22,7 +34,7 @@ def get_search_resources():
     except FileNotFoundError:
         return None, None, None
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="KidsMap Moscow", page_icon="🗺️", layout="wide")
 st.title("KidsMap Moscow")
 
 events = load_events()
@@ -48,9 +60,24 @@ selected_age_limits = st.sidebar.multiselect(
     default=list(AgeLimit),
     format_func=lambda a: a.value,
 )
+
+st.sidebar.divider()
+
 search_query = st.sidebar.text_input(
     "Поиск по смыслу", placeholder="например: что-то спокойное для трёхлетки"
 )
+
+st.sidebar.divider()
+
+with st.sidebar.expander("Цвет на карте"):
+    legend_html = "".join(
+        f'<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">'
+        f'<span style="width:12px;height:12px;border-radius:2px;'
+        f'background-color:{color};display:inline-block;"></span>'
+        f"<span>{category.value}</span></div>"
+        for category, color in CATEGORY_COLORS.items()
+    )
+    st.markdown(legend_html, unsafe_allow_html=True)
 
 filtered_events = filter_events(
     events, date_from, date_to, selected_categories, selected_age_limits
@@ -73,30 +100,30 @@ selected_index = None
 
 with col2:
     if filtered_events:
-        map_df = pd.DataFrame([e.model_dump() for e in filtered_events])
-        layer = pdk.Layer(
-            "ScatterplotLayer",
-            data=map_df,
-            id="events",
-            get_position=["lon", "lat"],
-            get_fill_color=[220, 60, 60],
-            get_radius=150,
-            pickable=True,
-            auto_highlight=True,
-        )
-        view_state = pdk.ViewState(latitude=55.75, longitude=37.62, zoom=9)
-        deck = pdk.Deck(
-            layers=[layer],
-            initial_view_state=view_state,
-            map_style=None,
-            tooltip={"text": "{title}\n{address}"},
-        )
-        event = st.pydeck_chart(
-            deck, on_select="rerun", selection_mode="single-object", key="map"
-        )
-        indices = event.selection.indices.get("events", [])
-        if indices:
-            selected_index = indices[0]
+        m = folium.Map(location=[55.75, 37.62], zoom_start=9)
+        location_lookup: dict[tuple[float, float, str], int] = {}
+        for i, e in enumerate(filtered_events):
+            color = CATEGORY_COLORS[e.category]
+            folium.CircleMarker(
+                location=[e.lat, e.lon],
+                radius=6,
+                color=color,
+                weight=1,
+                fill=True,
+                fill_color=color,
+                fill_opacity=0.85,
+                tooltip=e.title,
+                popup=f"{e.title}<br>{e.address}",
+            ).add_to(m)
+            location_lookup[(round(e.lat, 6), round(e.lon, 6), e.title)] = i
+
+        map_data = st_folium(m, height=500, use_container_width=True, key="map")
+
+        clicked = map_data.get("last_object_clicked")
+        clicked_tooltip = map_data.get("last_object_clicked_tooltip")
+        if clicked and clicked_tooltip:
+            key = (round(clicked["lat"], 6), round(clicked["lng"], 6), clicked_tooltip)
+            selected_index = location_lookup.get(key)
     else:
         st.write("Нет событий в выбранном диапазоне")
 

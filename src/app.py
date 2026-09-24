@@ -35,7 +35,7 @@ def get_search_resources():
         return None, None, None
 
 st.set_page_config(page_title="KidsMap Moscow", page_icon="🗺️", layout="wide")
-st.title("KidsMap Moscow")
+st.title(":green[KidsMap Moscow]")
 
 events = load_events()
 

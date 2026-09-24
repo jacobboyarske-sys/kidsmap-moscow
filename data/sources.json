@@ -10,5 +10,25 @@
   {
     "name": "kudago.com",
     "url": "https://kudago.com/msk/"
+  },
+  {
+    "name": "zaryadyehall.ru",
+    "url": "https://zaryadyehall.ru/events/for-kids/"
+  },
+  {
+    "name": "meloman.ru",
+    "url": "https://meloman.ru/kids/concerts/"
+  },
+  {
+    "name": "afisha.yandex.ru",
+    "url": "https://afisha.yandex.ru/moscow/selections/kids-concert-kids"
+  },
+  {
+    "name": "afisha.ru",
+    "url": "https://www.afisha.ru/msk/schedule_kids/concerts/"
+  },
+  {
+    "name": "msk.kassir.ru",
+    "url": "https://msk.kassir.ru/selection/kontsertyi-dlya-detey"
   }
 ]

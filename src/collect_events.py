@@ -1,12 +1,31 @@
+from datetime import date
 from pathlib import Path
 
 from src.data import load_events, merge_events, save_events
-from src.scrapers import kudago, mozart_for_kids, playforsoul
+from src.scrapers import (
+    afisha,
+    afisha_yandex,
+    kassir,
+    kudago,
+    meloman,
+    mozart_for_kids,
+    playforsoul,
+    zaryadyehall,
+)
 
 EVENTS_PATH = Path("data/events.json")
 SEED_PATH = Path("data/seed_events.json")
 
-SCRAPERS = [playforsoul, mozart_for_kids, kudago]
+SCRAPERS = [
+    playforsoul,
+    mozart_for_kids,
+    kudago,
+    zaryadyehall,
+    meloman,
+    afisha_yandex,
+    afisha,
+    kassir,
+]
 
 
 def main() -> None:
@@ -14,8 +33,14 @@ def main() -> None:
     events = load_events(base_path)
     before = len(events)
 
+    today = date.today()
+    days_to_year_end = (date(today.year, 12, 31) - today).days
+
     for scraper in SCRAPERS:
-        scraped = scraper.scrape()
+        if scraper is kudago:
+            scraped = scraper.scrape(days_ahead=days_to_year_end)
+        else:
+            scraped = scraper.scrape()
         events = merge_events(events, scraped)
         print(f"{scraper.SOURCE}: собрано {len(scraped)}, новых добавлено {len(events) - before}")
         before = len(events)

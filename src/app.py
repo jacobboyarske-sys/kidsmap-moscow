@@ -113,7 +113,18 @@ popup_lookup: dict[str, int] = {}
 
 with col2:
     if filtered_events:
-        m = folium.Map(location=[55.75, 37.62], zoom_start=9)
+        if st.context.theme.type == "dark":
+            m = folium.Map(
+                location=[55.75, 37.62],
+                zoom_start=9,
+                tiles=(
+                    "https://server.arcgisonline.com/ArcGIS/rest/services/"
+                    "Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+                ),
+                attr="Tiles &copy; Esri",
+            )
+        else:
+            m = folium.Map(location=[55.75, 37.62], zoom_start=9)
         for i, e in enumerate(filtered_events):
             color = CATEGORY_COLORS[e.category]
             folium.CircleMarker(

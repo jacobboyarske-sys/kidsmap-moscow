@@ -1,0 +1,31 @@
+[theme]
+base = "light"
+primaryColor = "#7C3AED"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F3FF"
+textColor = "#1F2328"
+linkColor = "#7C3AED"
+borderColor = "#E4E4E7"
+baseRadius = "12px"
+buttonRadius = "12px"
+showWidgetBorder = true
+showSidebarBorder = true
+
+font = "Nunito:https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+
+chartCategoricalColors = [
+    "#9c27b0",
+    "#ff9800",
+    "#3f51b5",
+    "#4caf50",
+    "#f44336",
+    "#00bcd4",
+    "#ffc107",
+    "#1976d2",
+]
+
+[theme.sidebar]
+backgroundColor = "#FAF5FF"
+secondaryBackgroundColor = "#F5F3FF"
+borderColor = "#E4E4E7"
+primaryColor = "#7C3AED"

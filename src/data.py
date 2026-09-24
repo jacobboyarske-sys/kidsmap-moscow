@@ -7,7 +7,10 @@ from pydantic import ValidationError
 from src.models import AgeLimit, Category, Event
 
 
-def load_events(path: Path = Path("data/seed_events.json")) -> list[Event]:
+def load_events(path: Path = Path("data/events.json")) -> list[Event]:
+    if not path.exists():
+        return []
+
     with path.open(encoding="utf-8") as f:
         records = json.load(f)
 
@@ -19,6 +22,22 @@ def load_events(path: Path = Path("data/seed_events.json")) -> list[Event]:
             print(f"Пропущена запись #{i}: {e}")
 
     return events
+
+
+def event_key(event: Event) -> tuple[str, str, str]:
+    return (event.source, event.title, str(event.start_date))
+
+
+def merge_events(existing: list[Event], scraped: list[Event]) -> list[Event]:
+    existing_keys = {event_key(e) for e in existing}
+    new_events = [e for e in scraped if event_key(e) not in existing_keys]
+    return existing + new_events
+
+
+def save_events(events: list[Event], path: Path = Path("data/events.json")) -> None:
+    records = [e.model_dump(mode="json") for e in events]
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(records, f, ensure_ascii=False, indent=2)
 
 
 def filter_events(

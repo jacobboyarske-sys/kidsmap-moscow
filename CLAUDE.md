@@ -26,8 +26,8 @@
 - Python 3.11+, venv
 - Streamlit + pydeck — интерфейс и карта
 - pandas, pydantic — данные и валидация
-- scikit-learn — классификация категорий (TF-IDF + LogisticRegression)
-- requests + BeautifulSoup4 — скрапинг афиш (этап 5)
+- sentence-transformers (rubert-tiny2) — семантический поиск по событиям
+- requests + BeautifulSoup4 — скрапинг афиш (уже сделано, `src/scrapers/`)
 
 ## Структура проекта (целевая, наполняется по этапам)
 
@@ -37,8 +37,9 @@ data/seed_events.json      # вручную собранные события
 data/events.json           # рабочий датасет (seed + спарсенное)
 src/models.py               # pydantic-модель Event
 src/app.py                  # Streamlit-приложение
-src/classify.py              # правила (возраст) + ML (категория)
-src/train_classifier.py      # обучение модели категорий
+src/classify.py              # правила (возраст)
+src/embed_events.py           # предвычисление эмбеддингов событий
+src/search.py                 # семантический поиск по эмбеддингам
 src/scrapers/                # по одному модулю на сайт-источник
 tests/
 ```

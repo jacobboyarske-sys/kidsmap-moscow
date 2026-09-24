@@ -10,6 +10,17 @@ import streamlit as st
 
 from src.data import filter_events, load_events
 from src.models import AgeLimit, Category
+from src.search import load_embeddings, load_model, search_events
+
+
+@st.cache_resource
+def get_search_resources():
+    try:
+        model = load_model()
+        embeddings, key_to_index = load_embeddings()
+        return model, embeddings, key_to_index
+    except FileNotFoundError:
+        return None, None, None
 
 st.set_page_config(layout="wide")
 st.title("KidsMap Moscow")
@@ -37,10 +48,24 @@ selected_age_limits = st.sidebar.multiselect(
     default=list(AgeLimit),
     format_func=lambda a: a.value,
 )
+search_query = st.sidebar.text_input(
+    "Поиск по смыслу", placeholder="например: что-то спокойное для трёхлетки"
+)
 
 filtered_events = filter_events(
     events, date_from, date_to, selected_categories, selected_age_limits
 )
+
+if search_query.strip():
+    model, embeddings, key_to_index = get_search_resources()
+    if model is None:
+        st.sidebar.warning(
+            "Поиск по смыслу недоступен — сначала запустите `python -m src.embed_events`."
+        )
+    else:
+        filtered_events = search_events(
+            search_query, filtered_events, model, embeddings, key_to_index, top_n=10
+        )
 
 col1, col2 = st.columns(2)
 

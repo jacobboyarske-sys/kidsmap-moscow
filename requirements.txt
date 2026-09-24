@@ -1,3 +1,7 @@
 streamlit
 pandas
 pydantic
+requests
+beautifulsoup4
+sentence-transformers
+numpy

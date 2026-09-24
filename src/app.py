@@ -102,7 +102,7 @@ if search_query.strip():
             search_query, filtered_events, model, embeddings, key_to_index, top_n=10
         )
 
-col1, col2 = st.columns(2)
+col1, col2 = st.columns([3, 2])
 
 if "map_click_count" not in st.session_state:
     st.session_state.map_click_count = 0
@@ -133,7 +133,7 @@ with col2:
         lons = [e.lon for e in filtered_events]
         m.fit_bounds([[min(lats), min(lons)], [max(lats), max(lons)]])
 
-        map_data = st_folium(m, height=1000, use_container_width=True, key="map")
+        map_data = st_folium(m, height=550, use_container_width=True, key="map")
 
         click_count = map_data.get("last_object_clicked_count") or 0
         if click_count > st.session_state.map_click_count:
@@ -164,15 +164,17 @@ with col1:
         st.dataframe(
             df,
             hide_index=True,
-            height=800,
+            height=550,
             column_config={
-                "title": st.column_config.TextColumn("Название"),
-                "start_date": st.column_config.DateColumn("Дата начала", format="DD.MM.YYYY"),
-                "category": st.column_config.TextColumn("Категория"),
-                "age_limit": st.column_config.TextColumn("Возраст"),
-                "price": st.column_config.TextColumn("Цена"),
+                "title": st.column_config.TextColumn("Название", width="medium"),
+                "start_date": st.column_config.DateColumn(
+                    "Дата начала", format="DD.MM.YYYY", width="small"
+                ),
+                "category": st.column_config.TextColumn("Категория", width="small"),
+                "age_limit": st.column_config.TextColumn("Возраст", width="small"),
+                "price": st.column_config.TextColumn("Цена", width="small"),
                 "url": st.column_config.LinkColumn(
-                    "Ссылка", display_text=r"https://(?:www\.)?([^/]+)"
+                    "Ссылка", display_text=r"https://(?:www\.)?([^/]+)", width="small"
                 ),
             },
         )

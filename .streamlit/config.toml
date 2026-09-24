@@ -13,7 +13,7 @@ showWidgetBorder = true
 showSidebarBorder = true
 
 font = "Nunito:https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
-headingFontSizes = ["88px", "44px", "36px", "28px", "22px", "18px"]
+headingFontSizes = ["48px", "36px", "28px", "22px", "18px", "16px"]
 
 chartCategoricalColors = [
     "#9c27b0",

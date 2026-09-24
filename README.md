@@ -6,6 +6,8 @@
 
 🔗 **Приложение:** [kidsmap-moscow.streamlit.app](https://kidsmap-moscow.streamlit.app/)
 
+![Скриншот приложения](assets/screenshot.png)
+
 ## Возможности
 
 - Карта событий (`folium`) с цветовой кодировкой по категориям, клик по точке

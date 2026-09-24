@@ -20,8 +20,8 @@ CATEGORY_COLORS: dict[Category, str] = {
     Category.SPORT: "#4caf50",
     Category.CINEMA: "#f44336",
     Category.EXCURSION: "#00bcd4",
-    Category.HOLIDAY: "#e91e63",
-    Category.CONCERT: "#795548",
+    Category.HOLIDAY: "#ffc107",
+    Category.CONCERT: "#1976d2",
 }
 
 
@@ -107,11 +107,11 @@ with col2:
             folium.CircleMarker(
                 location=[e.lat, e.lon],
                 radius=6,
-                color=color,
-                weight=1,
+                color="white",
+                weight=2,
                 fill=True,
                 fill_color=color,
-                fill_opacity=0.85,
+                fill_opacity=0.9,
                 tooltip=e.title,
                 popup=f"{e.title}<br>{e.address}",
             ).add_to(m)

@@ -117,7 +117,7 @@ with col2:
             ).add_to(m)
             location_lookup[(round(e.lat, 6), round(e.lon, 6), e.title)] = i
 
-        map_data = st_folium(m, height=500, use_container_width=True, key="map")
+        map_data = st_folium(m, height=1000, use_container_width=True, key="map")
 
         clicked = map_data.get("last_object_clicked")
         clicked_tooltip = map_data.get("last_object_clicked_tooltip")
